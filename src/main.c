@@ -1,3 +1,4 @@
+#define TEXTURES_IMPL
 #include "textures.h"
 #include "board.h"
 
@@ -9,13 +10,12 @@
 #include <time.h>
 #include <stdio.h>
 
-Texture TEXTURES[TEXTURE_COUNT];
-
-#define CELL_SIZE 36
+// actual size of textures is 36
+#define CELL_SIZE 18
 
 int main(void)
 {
-    board_t board = { .cols = 16, .rows = 20, .mines = 40 };
+    board_t board = { .cols = 16, .rows = 16, .mines = 40 };
     srandom(clock());
     board_init(&board);
     board_open_all(&board);
@@ -24,46 +24,52 @@ int main(void)
     InitWindow(board.cols * CELL_SIZE, board.rows * CELL_SIZE, "MS");
     SetTargetFPS(60);
 
-    for (enum texture_id id = 0; id < TEXTURE_COUNT; ++id) {
-        TEXTURES[id] = LoadTexture(TEXTURE_PATHS[id]);
-        if (!IsTextureValid(TEXTURES[id])) {
-            TraceLog(LOG_ERROR,
-                "Error: Failed to load texture '%s'\n", TEXTURE_PATHS[id]
-            );
-            return 1;
-        }
-    }
+    // initializes TEXTURES
+    if (!textures_load()) return 1;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
-        ClearBackground(GetColor(0x00000000));
+        ClearBackground(BLACK);
         for (int index = 0; index < BOARD_LENGTH(&board); ++index) {
-            enum texture_id tid;
+            Texture texture;
             cell_t cell = board.grid[index];
             switch (cell.state) {
             case CELL_STATE_FLAG:
-                tid = TEXTURE_ID_flag;
+                texture = TEXTURES[TEXTURE_ID_flag];
                 break;
             case CELL_STATE_CLOSED:
-                tid = TEXTURE_ID_closed;
+                texture = TEXTURES[TEXTURE_ID_closed];
                 break;
             case CELL_STATE_OPEN:
                 if (cell.mine) {
-                    tid = TEXTURE_ID_mine_blasted;
+                    texture = TEXTURES[TEXTURE_ID_mine_blasted];
                     break;
                 } else {
-                    tid = (enum texture_id)cell.number;
+                    texture = TEXTURES[(enum texture_id)cell.number];
                     break;
                 }
             }
-            DrawTexture(
-                TEXTURES[tid],
-                BOARD_I2X(&board, index) * CELL_SIZE,
-                BOARD_I2Y(&board, index) * CELL_SIZE,
-                GetColor(0xFFFFFFFF)
+            DrawTexturePro(
+                texture,
+                // source
+                (Rectangle) { 0, 0, texture.width, texture.height },
+                // destination
+                (Rectangle) {
+                    BOARD_I2X(&board, index) * CELL_SIZE,
+                    BOARD_I2Y(&board, index) * CELL_SIZE,
+                    CELL_SIZE,
+                    CELL_SIZE
+                },
+                // origin
+                (Vector2) { 0 },
+                // rotation
+                0,
+                // tint
+                WHITE
             );
         }
         EndDrawing();
     }
+    textures_unload();
     CloseWindow();
 }

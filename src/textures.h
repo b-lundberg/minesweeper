@@ -28,10 +28,41 @@ enum texture_id {
     TEXTURE_COUNT
 };
 
+#ifdef TEXTURES_IMPL
+
+#include <raylib.h>
+#include <stdbool.h>
+
 const char *TEXTURE_PATHS[TEXTURE_COUNT] = {
     #define X(name) "textures/" #name ".png",
     TEXTURE_LIST
     #undef X
 };
 
+Texture TEXTURES[TEXTURE_COUNT];
+
+bool textures_load()
+{
+    for (enum texture_id id = 0; id < TEXTURE_COUNT; ++id) {
+        TEXTURES[id] = LoadTexture(TEXTURE_PATHS[id]);
+        SetTextureFilter(TEXTURES[id], TEXTURE_FILTER_BILINEAR);
+        if (!IsTextureValid(TEXTURES[id])) {
+            TraceLog(LOG_ERROR,
+                "Error: Failed to load texture '%s'\n", TEXTURE_PATHS[id]
+            );
+            return false;
+        }
+    }
+    return true;
+}
+
+void textures_unload()
+{
+    for (enum texture_id id = 0; id < TEXTURE_COUNT; ++id) {
+        UnloadTexture(TEXTURES[id]);
+    }
+}
+
+#undef TEXTURES_IMPL
+#endif // TEXTURES_IMPL
 #endif // TEXTURES_H
