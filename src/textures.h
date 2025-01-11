@@ -1,6 +1,8 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 
+#include <raylib.h>
+
 // https://en.wikipedia.org/wiki/X_macro
 #define TEXTURE_LIST    \
     X(0)                \
@@ -28,9 +30,12 @@ enum texture_id {
     TEXTURE_COUNT
 };
 
-#ifdef TEXTURES_IMPL
+#ifndef TEXTURES_IMPL
 
-#include <raylib.h>
+extern Texture TEXTURES[TEXTURE_COUNT];
+
+#else // TEXTURES_IMPL
+
 #include <stdbool.h>
 
 const char *TEXTURE_PATHS[TEXTURE_COUNT] = {
@@ -45,7 +50,6 @@ bool textures_load()
 {
     for (enum texture_id id = 0; id < TEXTURE_COUNT; ++id) {
         TEXTURES[id] = LoadTexture(TEXTURE_PATHS[id]);
-        SetTextureFilter(TEXTURES[id], TEXTURE_FILTER_BILINEAR);
         if (!IsTextureValid(TEXTURES[id])) {
             TraceLog(LOG_ERROR,
                 "Error: Failed to load texture '%s'\n", TEXTURE_PATHS[id]
