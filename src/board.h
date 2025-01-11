@@ -7,6 +7,7 @@
 typedef struct cell {
     char number; // 0-8
     bool mine;
+    bool visited;
     enum {
         CELL_STATE_CLOSED,
         CELL_STATE_OPEN,
@@ -32,7 +33,9 @@ typedef struct board {
 
 void board_init(board_t *board);
 void board_init_numbers(board_t *board);
-void board_open(board_t *board, int index);
+bool board_open(board_t *board, int index);
+void board_flag(board_t *board, int index);
+bool board_open_around(board_t *board, int index);
 void board_open_all(board_t *board);
 
 #endif // BOARD_H

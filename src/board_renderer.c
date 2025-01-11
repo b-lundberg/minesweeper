@@ -74,5 +74,10 @@ void board_renderer_click(
             return;
         }
     }
-    if (btn == MOUSE_BUTTON_LEFT) board_open(renderer->board, index);
+    if (btn == MOUSE_BUTTON_LEFT)
+        board_open(renderer->board, index);
+    else if (btn == MOUSE_BUTTON_RIGHT)
+        board_flag(renderer->board, index);
+    else if (btn == MOUSE_BUTTON_MIDDLE)
+        board_open_around(renderer->board, index);
 }

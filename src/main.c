@@ -70,6 +70,16 @@ int main(void)
                                  world_space_mouse,
                                  MOUSE_BUTTON_LEFT);
         }
+        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            board_renderer_click(&board_renderer,
+                                 world_space_mouse,
+                                 MOUSE_BUTTON_RIGHT);
+        }
+        if (IsMouseButtonPressed(MOUSE_BUTTON_MIDDLE)) {
+            board_renderer_click(&board_renderer,
+                                 world_space_mouse,
+                                 MOUSE_BUTTON_MIDDLE);
+        }
 
         board_renderer_render(&board_renderer);
         BeginDrawing();
