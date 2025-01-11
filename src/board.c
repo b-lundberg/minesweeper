@@ -90,6 +90,7 @@ void board_flag(board_t *board, int index)
 
 bool board_open_around(board_t *board, int index)
 {
+    if (board->grid[index].state != CELL_STATE_OPEN) return true;
     bool result = true;
     NEIGHBOUR_ITER(board, index, int nbor, {
         result = board_open(board, nbor) && result;

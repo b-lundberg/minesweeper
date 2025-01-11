@@ -27,8 +27,8 @@ int main(void)
 
     SetTraceLogLevel(LOG_WARNING);
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(800, 400, "MS");
-    SetWindowMinSize(200, 200);
+    InitWindow(600, 600, "MS");
+    SetWindowMinSize(300, 300);
     SetTargetFPS(60);
 
     // initializes TEXTURES
